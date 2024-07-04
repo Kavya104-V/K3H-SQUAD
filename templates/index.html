@@ -54,7 +54,7 @@
         </div>
     </nav>
 
-    <!-- Main form of page -->
+    
     <h1 class="mt-4 my-4 text-center text-green">Disease Prediction</h1>
     <div class="container my-4 mt-4 custom-container">
         <form action="/predict" method="post">
@@ -68,7 +68,7 @@
             </button>
             <br>
 
-            <!-- Display the transcribed text here -->
+           
             <div name="mysysms" id="transcription"></div>
 
             {% if message %}
@@ -81,22 +81,22 @@
     </div>
 
     {% if predicted_disease %}
-    <!-- Results -->
+    
     <h1 class="text-center my-4 mt-4">Our AI System Results</h1>
     <div class="container">
         <div class="result-container">
-            <!-- Buttons to toggle display -->
+           
             <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#diseaseModal" style="padding:4px;  margin: 5px 40px 5px 0; font-size:20px;font-weight:bold; width:140px; border-radius:5px; background:#F39334;color:black;">Disease</button>
             <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#descriptionModal" style="padding:4px; margin: 5px 40px 5px 0; font-size:20px;font-weight:bold; width:140px; border-radius:5px; background:#268AF3 ;color:black;">Description</button>
             <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#precautionModal" style="padding:4px; margin: 5px 40px 5px 0; font-size:20px;font-weight:bold; width:140px; border-radius:5px; background:#F371F9 ;color:black;">Precaution</button>
             <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#medicationsModal" style="padding:4px; margin: 5px 40px 5px 0; font-size:20px;font-weight:bold; width:140px;border-radius:5px; background:#F8576F ;color:black;">Medications</button>
             <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#workoutsModal" style="padding:4px; margin: 5px 40px 5px 0; font-size:20px;font-weight:bold; width:140px; border-radius:5px; background:#99F741 ;color:black;">Workouts</button>
             <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#dietsModal" style="padding:4px; margin: 5px 40px 5px 0; font-size:20px;font-weight:bold; width:140px; border-radius:5px; background:#E5E23D;color:black;">Diets</button>
+            <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#homeremedyModal" style="padding:4px; margin: 5px 40px 5px 0; font-size:20px;font-weight:bold; width:140px; border-radius:5px; background:#E5E23D;color:black;">Home Remedy</button>
             <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#appointmentsModal" style="padding:4px; margin: 5px 40px 5px 0; font-size:20px;font-weight:bold; width:140px; border-radius:5px; background:#9556dd;color:black;">Book Appointments</button>
         </div>
     </div>
 
-    <!-- Disease Modal -->
     <div class="modal fade" id="diseaseModal" tabindex="-1" aria-labelledby="diseaseModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -111,7 +111,7 @@
         </div>
     </div>
 
-    <!-- Description Modal -->
+   
     <div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -126,7 +126,6 @@
         </div>
     </div>
 
-    <!-- Precaution Modal -->
     <div class="modal fade" id="precautionModal" tabindex="-1" aria-labelledby="precautionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -145,7 +144,7 @@
         </div>
     </div>
 
-    <!-- Medications Modal -->
+    
     <div class="modal fade" id="medicationsModal" tabindex="-1" aria-labelledby="medicationsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -202,6 +201,24 @@
         </div>
     </div>
 
+    <div class="modal fade" id="homeremedyModal" tabindex="-1" aria-labelledby="homeremedyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #020606; color:white;">
+                    <h5 class="modal-title" id="homeremedyModalLabel">Home remedies</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul>
+                        {% for i in my_remedy %}
+                            <li>{{ i }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Appointments Modal -->
     <div class="modal fade" id="appointmentsModal" tabindex="-1" aria-labelledby="appointmentsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -211,7 +228,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-              <!--     <a href="https://www.google.com/maps/search/{{ predicted_disease }}+hospitals+near+me" target="_blank">Find {{ predicted_disease }} Hospitals Near Me</a>  -->
+                  <a href="https://www.google.com/maps/search/{{ predicted_disease }}+hospitals+near+me" target="_blank">Find {{ predicted_disease }} Hospitals Near Me</a> 
 
                     
                     <a href="{{ url_for('book') }}">
@@ -226,27 +243,90 @@
     {% endif %}
 
     <script>
-        const startSpeechRecognitionButton = document.getElementById('startSpeechRecognition');
-        const transcriptionDiv = document.getElementById('transcription');
+        document.getElementById('startSpeechRecognition').addEventListener('click', function () {
+            const recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            recognition.continuous = true; // Keep recognition active until explicitly stopped
 
-        startSpeechRecognitionButton.addEventListener('click', startSpeechRecognition);
+            let timeoutId;
 
-        function startSpeechRecognition() {
-            const recognition = new webkitSpeechRecognition(); // Use webkitSpeechRecognition for compatibility
-
-            recognition.lang = 'en-US'; // Set the language for recognition
+            recognition.onstart = function () {
+                console.log('Speech recognition started');
+                clearTimeout(timeoutId); // Clear any existing timeout
+            };
 
             recognition.onresult = function (event) {
-                const result = event.results[0][0].transcript;
-                transcriptionDiv.textContent = result;
+                const transcriptionDiv = document.getElementById('transcription');
+                const symptomsInput = document.getElementById('symptoms');
+                const transcript = event.results[0][0].transcript;
+
+                // Define the mapping for symptoms
+                const symptomMapping = {
+                    "joint pain": "joint_pain",
+                    "stomach pain": "stomach_pain",
+                    "chest pain": "chest_pain",
+                    "back pain": "back_pain",
+                    "sore throat": "sore_throat",
+                    "headache": "headache",
+                    "fever": "fever",
+                    "cough": "cough"
+                    // Add more mappings as needed
+                };
+
+                // Split transcript into words based on common separators
+                const words = transcript.split(/[\s,]+/); // Split by whitespace or comma
+
+                let mappedSymptoms = [];
+                let i = 0;
+
+                while (i < words.length) {
+                    let word = words[i];
+                    if (i < words.length - 1) {
+                        let twoWords = word + " " + words[i + 1];
+                        if (symptomMapping[twoWords]) {
+                            mappedSymptoms.push(symptomMapping[twoWords]);
+                            i += 2;
+                            continue;
+                        }
+                    }
+                    if (symptomMapping[word]) {
+                        mappedSymptoms.push(symptomMapping[word]);
+                    } else {
+                        mappedSymptoms.push(word);
+                    }
+                    i++;
+                }
+
+                // Join symptoms with comma for display and set to input value
+                const formattedSymptoms = mappedSymptoms.join(',');
+                transcriptionDiv.textContent = 'Recognized Symptoms: ' + formattedSymptoms;
+                transcriptionDiv.style.display = 'block';
+
+                // Set the formatted symptoms as the value of the input field
+                symptomsInput.value = formattedSymptoms;
+
+                // Restart timeout to turn off recognition after silence
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(function () {
+                    recognition.stop();
+                    console.log('Speech recognition stopped due to inactivity');
+                }, 3000); // Adjust the duration (in milliseconds) of silence before stopping
+            };
+
+            recognition.onerror = function (event) {
+                console.error('Speech recognition error occurred:', event.error);
+                clearTimeout(timeoutId);
             };
 
             recognition.onend = function () {
-                console.log('Speech recognition ended.');
+                console.log('Speech recognition ended');
+                clearTimeout(timeoutId);
             };
 
             recognition.start();
-        }
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
