@@ -15,15 +15,15 @@ def load_css(file_path):
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Load the custom CSS
-load_css(os.path.join(os.path.dirname(__file__), "styles.css"))
+load_css(os.path.join(os.path.dirname(_file_), "styles.css"))
 
 # Getting the working directory of the main.py
-working_dir = os.path.dirname(os.path.abspath(__file__))
+working_dir = os.path.dirname(os.path.abspath(_file_))
 
 # Loading the saved models
 diabetes_model = pickle.load(open(f'{working_dir}/saved_models/diabetes_model.sav', 'rb'))
 heart_disease_model = pickle.load(open(f'{working_dir}/saved_models/heart_disease_model.sav', 'rb'))
-parkinsons_model = pickle.load(open(f'{working_dir}/saved_models/parkinsons_model.sav', 'rb'))
+
 
 # Styling for DiagnoSmart header
 st.markdown(
@@ -34,9 +34,9 @@ st.markdown(
 # Sidebar for navigation with custom styling
 with st.sidebar:
     selected = option_menu('Multiple Disease Prediction System',
-                           ['Diabetes Prediction', 'Heart Disease Prediction', 'Parkinsons Prediction', 'Back'],
+                           ['Diabetes Prediction', 'Heart Disease Prediction', 'Back'],
                            menu_icon='hospital-fill',
-                           icons=['activity', 'heart', 'person', 'arrow-left-circle'],
+                           icons=['activity', 'heart', 'arrow-left-circle'],
                            default_index=0,
                            styles={
                                "container": {"padding": "5px", "background-color": "#333"},
@@ -133,43 +133,3 @@ elif selected == 'Heart Disease Prediction':
             heart_diagnosis = 'The person does not have any heart disease'
 
         st.success(heart_diagnosis)
-
-
-elif selected == "Parkinsons Prediction":
-    
-    st.title("Parkinson's Disease Prediction using ML")
-
-    
-    col1, col2, col3, col4, col5 = st.columns(5)
-    with col1:
-        fo = st.text_input('MDVP:Fo(Hz)', key='fo')
-        RAP = st.text_input('MDVP:RAP', key='RAP')
-        APQ = st.text_input('MDVP:APQ', key='APQ')
-        APQ3 = st.text_input('Shimmer:APQ3', key='APQ3')
-        D2 = st.text_input('D2', key='D2')
-
-    with col2:
-        fhi = st.text_input('MDVP:Fhi(Hz)', key='fhi')
-        PPQ = st.text_input('MDVP:PPQ', key='PPQ')
-        DDA = st.text_input('Shimmer:DDA', key='DDA')
-        APQ5 = st.text_input('Shimmer:APQ5', key='APQ5')
-        PPE = st.text_input('PPE', key='PPE')
-
-    with col3:
-        flo = st.text_input('MDVP:Flo(Hz)', key='flo')
-        DDP = st.text_input('MDVP:DDP', key='DDP')
-        NHR = st.text_input('NHR', key='NHR')
-        HNR = st.text_input('HNR', key='HNR')
-
-    if st.button("Parkinson's Test Result", key='parkinsons_button'):
-        user_input = [fo, fhi, flo, RAP, PPQ, DDP, APQ, APQ3, DDA, APQ5, NHR, HNR, D2, PPE]
-        user_input = [float(x) for x in user_input]
-
-        parkinsons_prediction = parkinsons_model.predict([user_input])
-
-        if parkinsons_prediction[0] == 1:
-            parkinsons_diagnosis = "The person has Parkinson's disease"
-        else:
-            parkinsons_diagnosis = "The person does not have Parkinson's disease"
-
-        st.success(parkinsons_diagnosis)
